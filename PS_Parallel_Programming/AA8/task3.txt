@@ -1,0 +1,60 @@
+Code 1:
+
+void copy(double* x, double* y) {
+    for (int i = 0; i < 1024, i++) {
+        x[i] = y[i];
+    }
+}
+
+Yes this code can be safly parallelized manually because it does not matter
+how the array is split up. The operation also does not depend on a previous
+one. (#pragma omp simd)
+
+Also it can be done by the compiler. -O3
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+Code 2:
+
+for (int i = 4; i <= N, i += 7) {
+    for (int j = 0; j <= N; j += 3) {
+        A[i] = 0;
+    }
+}
+
+Normalized Loop Nest:
+
+for (ln = 1; ln <= (N - 4 + 7) / 7; ln++) {
+    for (lm = 1; lm <= (M - 0 + 3) / 3; lm++) {
+        A[ln * 7 - 7 + 4]
+    }
+
+    j = lm * 3 - 3 + 0;
+}
+
+i = ln * 7 - 7 + 4;
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+Code 3:
+
+for (int i = 1; i < N; i++) {
+    for (int j = 1; j < M; j++) {
+        for (int k = 1; k < L; k++) {
+            a[i+1][j][k-1] = a[i][j][k] + 5;
+        }
+    }
+}
+
+Yes it does hold a dependencie. A true dependencie to itself.
+S1 [1, 1, 2] S1[2, 1, 1] for a[2][1][1]
+Distance Vector:  (1, 0, -1)
+Direction Vector:  (<, =, >)
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------

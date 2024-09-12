@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#$-q lva.q
+
+#$ -cwd
+
+#$ -N AA4
+
+#$ -o output.dat
+
+#$ -j yes
+
+#$ -pe openmp 8
+
+export OMP_NUM_THREADS=1
+./par 8
+./par 10
+./par 12
+
+export OMP_NUM_THREADS=2
+./par 8
+./par 10
+./par 12
+
+
+export OMP_NUM_THREADS=4
+./par 8
+./par 10
+./par 12
+
+
+export OMP_NUM_THREADS=8
+./par 8
+./par 10
+./par 12

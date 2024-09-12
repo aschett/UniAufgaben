@@ -1,0 +1,60 @@
+Performance counter stats for './task3':
+
+           1020540      r01C7:u
+
+       0.004876102 seconds time elapsed
+
+       0.002644000 seconds user
+       0.001763000 seconds sys
+
+
+Performance counter stats for './task3':
+
+             14336      r02C7:u
+
+       0.004747816 seconds time elapsed
+
+       0.000733000 seconds user
+       0.003667000 seconds sys
+
+
+Performance counter stats for './task3':
+
+                 0      r04C7:u
+
+       0.004536076 seconds time elapsed
+
+       0.002126000 seconds user
+       0.002126000 seconds sys
+
+
+
+Performance counter stats for './task3':
+
+             16445      r08C7:u
+
+       0.005121121 seconds time elapsed
+
+       0.003167000 seconds user
+       0.001055000 seconds sys
+
+
+ Performance counter stats for './task3':
+
+             34944      r10C7:u
+
+       0.004439092 seconds time elapsed
+
+       0.002077000 seconds user
+       0.002077000 seconds sys
+
+
+
+ Performance counter stats for './task3':
+
+           1084170      r1FC7:u
+
+       0.004633652 seconds time elapsed
+
+       0.000872000 seconds user
+       0.003491000 seconds sys

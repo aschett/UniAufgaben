@@ -1,0 +1,132 @@
+1.
+
+a[0] = 0;
+#pragma omp parallel for
+for (i=1; i<N; i++) {
+    a[i] = 2.0*i*(i-1);				
+    b[i] = a[i] - a[i-1];		
+}
+
+Die Zuweisung b[i] ist abhängig von der Berechnung von a[i], deshalb macht in dem Beispiel,
+die Parallelisierung kein Sinn.
+
+Lösung:
+
+Man könnte die Zuweisungen in 2 parallelisierten Schleifen unterteilen und Vektorisieren.
+
+Vorteil: Richtiges Ergebnis, n+n Laufzeit = n
+Nachteil: 
+
+Man könnte die Zuweisungen in einem Task zusammenfassen
+Vorteil: alles in einer loop, spart code
+Nachteil: 
+
+______________________________________________________________________________________________
+
+2.
+
+a[0] = 0;
+#pragma omp parallel
+{
+    #pragma omp for nowait
+    for (i=1; i<N; i++) {
+        a[i] = 3.0*i*(i+1);
+    }
+    #pragma omp for
+    for (i=1; i<N; i++) {
+        b[i] = a[i] - a[i-1];
+    }
+}
+
+omp parallel erzeugt 8 Threads, alle 8 Threads durchlaufen die erste for-loop. ist ein Thread
+mit der Loop fertig, wartet er nicht auf die anderen Threads, sondern beginnt mit der 2. Schleife.
+
+Allerdings führt das zu Problemen, weil die 2. Schleife abhängig von er ersten ist und dies
+zu "race conditions" führen kann.
+
+Lösung:
+
+#pragma omp for 	anstatt 	#pragma omp for nowait 	verwenden
+Zusätzliche Faktorisierung für mehr speedup.
+Vorteil: Abhängige Rechnungen werden nicht getrennt
+Nachteil: Mehr code
+
+In einem Task zusammenfassen
+Vorteil: Weniger Code
+Nachteil:
+
+
+
+______________________________________________________________________________________________
+
+3.
+
+#pragma omp parallel for
+for (i=1; i<N; i++) {
+    x = sqrt(b[i]) - 1;
+    a[i] = x*x + 2*x + 1;
+}
+
+Beide Zuweisungen müssen nacheinander abgearbeitete werden, um das gewünschte Ergebnis zu
+erhalten. In dem Beispiel werden beide Zuweisungen gleichzeitig ausgeführt und so kommt es
+zu einem falschen Ergebnis, weil x ein anderer Wert sein kann welcher für einen anderen
+Array Index bestimmt war.
+
+Lösung:
+
+#pragma omp parallel for
+for (i=1; i<N; i++) {
+	#pragma omp task
+	{
+		x = sqrt(b[i]) - 1;
+    		a[i] = x*x + 2*x + 1;
+	}
+}
+
+Ein Thread kümmert sich jetzt um die gesamte Rechnung und die anderen Threads können parallel
+die anderen Einträge berechnen.
+
+
+______________________________________________________________________________________________
+
+4.
+
+f = 2;
+#pragma omp parallel for private(f,x)
+for (i=1; i<N; i++) {
+    x = f * b[i];
+    a[i] = x - 7;
+}
+a[0] = x;
+
+Beide Rechnungen sind abhängig von einander, beide Rechnungen müssen hintereinander erfolgen.
+In diesem Beispiel kann es zu Race conditions führen, es wird ein x Wert benutzt der von einem
+anderen Thread berechnet wurde.
+
+Lösung:
+
+    x = f * b[i];
+    a[i] = x - 7;
+
+Den Teil als ein Task zusammenfassen. Die Iterationen können unabhängig voneinander arbeiten.
+
+Wenn das letzte x a[0] zugewiesen werden soll, dann if(i == N-1) a[0] = x;	in die
+schleife schreiben.
+
+
+______________________________________________________________________________________________
+5.
+
+sum = 0; 
+#pragma omp parallel for
+for (i=1; i<N; i++) {
+    sum = sum + b[i];
+}
+
+Diese Parallelisierung hat keinen Fehler. Kommutativgesetz!
+Zusätzliche Optimierung mit Faktorisierung kann den Speedup erhöhen.
+
+Ist N sehr sehr groß, kann man N in Blöcke aufteilen
+
+
+______________________________________________________________________________________________

@@ -1,0 +1,124 @@
+Als erstes Merkt man natürlich dass der compiler spukt dass printf nicht vektorisierbar ist.
+Der compiler berechnet schon wie viele iterationen man machen muss um einen profit durch vektorisierung zu bekommen.
+
+
+
+Loop ->
+
+        for(int i = 1; i < SIZE-1; ++i) {
+                a[i] = a[i%argc];
+        }
+
+
+analisys.c:22:9: note: not vectorized: not suitable for gather load _5 = a[_4];
+analisys.c:22:9: note: bad data references. 
+
+
+
+
+Loop -> 
+
+
+        for(int i = 4; i < SIZE; ++i) {
+                a[i-4] = a[i];
+        }
+
+
+
+analisys.c:18:9: note: LOOP VECTORIZED
+analisys.c:18:9: note: Cost model analysis:
+  Calculated minimum iters for profitability: 0
+
+die Schleife ist ab 0 iterationen profitabel?
+
+
+
+Loop ->
+
+        for(int i = 0; i < SIZE; ++i) {
+                b[i] = a[i];
+        }
+
+
+
+analisys.c:14:9: note: LOOP VECTORIZED
+analisys.c:14:9: note: Cost model analysis:
+  Vector inside of loop cost: 24
+  Vector prologue cost: 0
+  Vector epilogue cost: 0
+  Scalar iteration cost: 24
+  Scalar outside cost: 0
+  Vector outside cost: 0
+  prologue iterations: 0
+  epilogue iterations: 0
+  Calculated minimum iters for profitability: 0
+analisys.c:14:9: note:   Runtime profitability threshold = 4
+
+
+Loop ->
+
+        for(int i = 0; i < SIZE; ++i) {
+                a[i] = argc;
+        }
+
+analisys.c:10:9: note: Cost model analysis:
+  Vector inside of loop cost: 12
+  Vector prologue cost: 4
+  Vector epilogue cost: 0
+  Scalar iteration cost: 12
+  Scalar outside cost: 0
+  Vector outside cost: 4
+  prologue iterations: 0
+  epilogue iterations: 0
+  Calculated minimum iters for profitability: 1
+analisys.c:10:9: note:   Runtime profitability threshold = 4
+analisys.c:10:9: note: New loop exit condition: if (ivtmp_66 < 256)
+analisys.c:10:9: note: LOOP VECTORIZED
+
+
+
+Why does this work tho and the 1st doesnt?
+
+
+
+
+Overall:
+
+analisys.c:5:5: note: vectorized 3 loops in function.
+
+
+analisys.c:11:22: note: not vectorized: no vectype for stmt: MEM[(int *)vectp_a.10_62] = vect_cst__61;
+ scalar_type: vector(4) int
+
+analisys.c:11:22: note: not vectorized: not enough data-refs in basic block.
+
+analisys.c:15:22: note: not vectorized: no vectype for stmt: vect__1.7_37 = MEM[(int *)vectp_a.5_13];
+ scalar_type: vector(4) int
+
+analisys.c:15:22: note: not vectorized: no vectype for stmt: MEM[(int *)vectp_b.8_36] = vect__1.7_37;
+ scalar_type: vector(4) int
+
+analisys.c:15:22: note: not vectorized: no grouped stores in basic block.
+
+analisys.c:19:24: note: not vectorized: no vectype for stmt: vect__3.2_42 = MEM[(int *)vectp_a.0_46];
+ scalar_type: vector(4) int
+analisys.c:19:24: note: not vectorized: no vectype for stmt: MEM[(int *)vectp_a.3_40] = vect__3.2_42;
+ scalar_type: vector(4) int
+
+
+analisys.c:19:24: note: not vectorized: no grouped stores in basic block.
+
+
+analisys.c:22:9: note: got vectype for stmt: _5 = a[_4];
+
+analisys.c:22:9: note: got vectype for stmt: a[i_52] = _5;
+
+
+analisys.c:22:9: note: not consecutive access _5 = a[_4];
+analisys.c:22:9: note: not consecutive access a[i_52] = _5;
+analisys.c:22:9: note: not vectorized: no grouped stores in basic block.
+
+
+analisys.c:28:17: note: not vectorized: not enough data-refs in basic block.
+
+
