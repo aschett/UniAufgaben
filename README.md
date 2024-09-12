@@ -20,3 +20,8 @@ This folder contains various exercises in Functional Programming, primarily code
 - Higher-Order Functions
 - List Comprehension
 - Lazy Evaluation
+
+## [Parallel Programming](/PS_Parallel_Programming/)
+
+This folder contains the exercises from the course Parallel Programming. This course focused on the use of OpenMP to parallelise and/or vectorize Code.
+
