@@ -23,5 +23,5 @@ This folder contains various exercises in Functional Programming, primarily code
 
 ## [Parallel Programming](/PS_Parallel_Programming/)
 
-This folder contains the exercises from the course Parallel Programming. This course focused on the use of OpenMP to parallelise and/or vectorize Code.
+This folder contains the exercises from the course Parallel Programming. This course focused on the use of OpenMP and is primarly coded in C to parallelise and/or vectorize Code.
 
