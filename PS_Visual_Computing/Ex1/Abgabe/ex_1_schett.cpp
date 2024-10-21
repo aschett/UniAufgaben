@@ -3,23 +3,25 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 using namespace std;
+
 //Needs an image in the same folder with the name ./image.jpg
 
 void show_and_resize_img(int width, int length, string image_path);
 
-//First the program opens an image with its original sizes, afterwards it opens it with modified sizes
+//first the program opens an image with its original sizes, afterwards it opens it with modified sizes
 int main(int argc, char** argv)
 {
     string image_path = "./image.jpg";
     show_and_resize_img(0, 0, image_path);
-    // waitKey(0) halts the program there and keeps the image displayed indefinetly until a key is pressed
+    // apparently this is needed to wait until there is a key press. otherwise my image wouldnt even show
+    // yeah ok makes sense otherwise the program just goes to returning i am stupid
     waitKey(0);
     show_and_resize_img(448, 336, image_path);
     waitKey(0);
     return 0;
 }
 
-//Input 0 into width and length if you only want to show image
+//input 0 into width and length if you only want to show image
 void show_and_resize_img(int width, int length, string image_path)
 {
     Mat image = imread(image_path);
