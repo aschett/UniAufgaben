@@ -26,16 +26,13 @@ int main(int argc, char** argv) {
     Canny(src1, otsu1, thres1/2, thres1);
     Canny(src2, otsu2, thres2/2, thres2);
 
-
     // Laplace and Sobel taken from the slides
-
     Mat laplace1_dst, laplace2_dst;
     Mat laplace1, laplace2;
     Laplacian(src1, laplace1_dst, CV_16S, 3, 1, 0, BORDER_DEFAULT);
     Laplacian(src2, laplace2_dst, CV_16S, 3, 1, 0, BORDER_DEFAULT);
     convertScaleAbs(laplace1_dst, laplace1);
     convertScaleAbs(laplace2_dst, laplace2);
-
 
     Mat grad_x1, grad_y1, abs_grad_x1, abs_grad_y1, sobel1;
     Sobel(src1, grad_x1, CV_16S, 1, 0, 3, 1, 0, BORDER_DEFAULT);  
@@ -56,10 +53,9 @@ int main(int argc, char** argv) {
     imshow("Sobel1", sobel1);
     waitKey(0);
 
-
     imshow("Canny2", otsu2);
-    imshow("Laplacian1", laplace2);
-    imshow("Sobel1", sobel2);
+    imshow("Laplacian2", laplace2);
+    imshow("Sobel2", sobel2);
     waitKey(0);
 
     return 0;

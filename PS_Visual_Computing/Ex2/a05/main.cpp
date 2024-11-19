@@ -27,7 +27,7 @@ void getFeaturesAndMatch(const Mat& src, const Mat& transformed, Ptr<Feature2D> 
     vector<DMatch> good_matches;
     float ratio_thresh = 0.75f; 
     for (const auto& knn_match : matches) {
-        if (knn_match.size() == 2 && knn_match[0].distance < ratio_thresh * knn_match[1].distance) {
+        if (knn_match[0].distance < ratio_thresh * knn_match[1].distance) {
             good_matches.push_back(knn_match[0]); 
         }
     }
@@ -38,8 +38,6 @@ void getFeaturesAndMatch(const Mat& src, const Mat& transformed, Ptr<Feature2D> 
                 Scalar::all(-1), Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
     imshow(windowName + " Matches | Good Matches = " + to_string(good_matches.size()) + "|" + transformationName, img_matches);
 }
-
-
 
 int main(int argc, char** argv) {
 
@@ -69,7 +67,7 @@ int main(int argc, char** argv) {
 
     Ptr<AKAZE> akaze = AKAZE::create();
     Ptr<BRISK> brisk = BRISK::create();
-    Ptr<xfeatures2d::SURF> surf = xfeatures2d::SURF::create(400);
+    Ptr<SURF> surf = SURF::create(400);
 
     getFeaturesAndMatch(src, transformed, akaze, NORM_HAMMING, "AKAZE", "Perspective Transformation");    //NORM_HAMMING gives the best reults according to this: https://vzat.github.io/comparing_images/week5.html#:~:text=All%20four%20algorithms%20for%20measuring,recommends%20using%20NORM_HAMMING%5B2%5D.
     getFeaturesAndMatch(src, transformed, brisk, NORM_HAMMING, "BRISK", "Perspective Transformation");    //Same for brisk according to this https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
@@ -77,11 +75,9 @@ int main(int argc, char** argv) {
     waitKey(0);
 
     GaussianBlur(src, transformed, Size(9, 9), 2, 2);
-
     getFeaturesAndMatch(src, transformed, akaze, NORM_HAMMING, "AKAZE", "Gaussian Blur"); 
     getFeaturesAndMatch(src, transformed, brisk, NORM_HAMMING, "BRISK", "Gaussian Blur");    
     getFeaturesAndMatch(src, transformed, surf, NORM_L2, "SURF", "Gaussian Blur");           
-   
     waitKey(0);
 
     resize(src, transformed, Size(), 0.5, 0.5);
